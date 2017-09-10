@@ -37,7 +37,6 @@ mysql -u root -e "\
 "
 EOF
 else
-  # TODO: make server-id discoverable
   export SERVER_ID=2
   cp -v /init-slave.sh /docker-entrypoint-initdb.d/
   cat > /etc/mysql/mysql.conf.d/repl-slave.cnf << EOF
@@ -47,6 +46,10 @@ master-info-repository=TABLE
 relay-log-info-repository=TABLE
 relay-log-recovery=1
 EOF
+fi
+
+if [ -n "$MYSQL_SERVER_ID" ]; then
+  export SERVER_ID=$MYSQL_SERVER_ID
 fi
 
 cat > /etc/mysql/mysql.conf.d/server-id.cnf << EOF
